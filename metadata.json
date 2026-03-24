@@ -1,0 +1,5 @@
+{
+  "name": "MyPrimaryCareGuide.ca",
+  "description": "A newcomer's guide to navigating the healthcare system in Kingston, Ontario.",
+  "requestFramePermissions": ["geolocation"]
+}
