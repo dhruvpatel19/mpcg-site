@@ -78,7 +78,7 @@ You do not need to understand every part of the system on day one. The most impo
         {
           title: "I need language help",
           content:
-            "Use browser translation for reading, but ask about interpreter support for clinical conversations and consent.",
+            "Read this guide in 33 languages using the Language menu, and ask about interpreter support for clinical conversations and consent.",
           icon: "info",
           link: { text: "Accessibility and language", url: "/about#accessibility" },
         },
@@ -137,13 +137,18 @@ const needHelpNowPage: PageContent = {
   title: "Need Help Now?",
   description:
     "Use this page when you have a health problem today or tonight and are not sure where to start.",
-  reviewed_on: "2026-03-23",
+  reviewed_on: "2026-06-11",
   review_status: "reviewed",
   sources: [
     {
       title: "Ontario: Get medical advice from Health811",
       url: "https://www.ontario.ca/page/get-medical-advice-health811",
       note: "Official 24/7 nurse advice service.",
+    },
+    {
+      title: "9-8-8: Suicide Crisis Helpline",
+      url: "https://988.ca/",
+      note: "Official national suicide crisis helpline. Call or text 9-8-8, free, 24/7.",
     },
     {
       title: "Kingston Health Sciences Centre",
@@ -212,7 +217,7 @@ const needHelpNowPage: PageContent = {
         {
           cells: [
             "I need mental health help tonight",
-            "Use crisis support right away if there is immediate danger or severe distress",
+            "Call or text 9-8-8 (Suicide Crisis Helpline), or call the 24/7 AMHS-KFLA crisis line",
             "If there is immediate risk to safety, call 911.",
           ],
         },
@@ -247,14 +252,15 @@ const needHelpNowPage: PageContent = {
         },
         {
           title: "Health811",
-          content: "Phone or online nurse advice if you are unsure where to go.",
+          content:
+            "Phone or online nurse advice if you are unsure where to go. Phone support is available in many languages.",
           icon: "info",
           link: { text: "Health811 listing", url: "/local-services/health811" },
         },
         {
           title: "Mental health crisis support",
           content:
-            "Use local crisis support if you need urgent mental health help, especially outside clinic hours.",
+            "Call or text 9-8-8 (Suicide Crisis Helpline) any time, or use local crisis support such as the 24/7 AMHS-KFLA crisis line.",
           icon: "heart",
           link: { text: "Mental health listings", url: "/local-services?category=mental-health" },
         },
@@ -423,8 +429,8 @@ const getPrimaryCarePage: PageContent = {
 const costsAndCoveragePage: PageContent = {
   title: "Costs and Coverage",
   description:
-    "Plain-language coverage guidance for OHIP, IFHP, student or private plans, and common out-of-pocket costs.",
-  reviewed_on: "2026-03-23",
+    "Plain-language coverage guidance for OHIP, IFHP, the Canadian Dental Care Plan, student or private plans, and common out-of-pocket costs.",
+  reviewed_on: "2026-06-11",
   review_status: "reviewed",
   sources: [
     {
@@ -447,6 +453,11 @@ const costsAndCoveragePage: PageContent = {
       url: "https://www.ontario.ca/page/get-help-high-prescription-drug-costs",
       note: "Official Trillium Drug Program guidance.",
     },
+    {
+      title: "Canada: Canadian Dental Care Plan",
+      url: "https://www.canada.ca/en/services/benefits/dental/dental-care-plan.html",
+      note: "Official federal dental coverage program information and eligibility.",
+    },
   ],
   sections: [
     {
@@ -454,7 +465,7 @@ const costsAndCoveragePage: PageContent = {
       title: "Coverage basics",
       type: "default",
       content:
-        "Coverage in Ontario depends on your legal status, age, income, program eligibility, and whether you have a school or private insurance plan.\n\nMany medically necessary doctor and hospital services are covered for eligible OHIP patients. That does **not** mean everything is free. Medicines, dental care, vision care, forms, sick notes, and many allied health services often involve separate coverage or out-of-pocket payment.",
+        "Coverage in Ontario depends on your legal status, age, income, program eligibility, and whether you have a school or private insurance plan.\n\nMany medically necessary doctor and hospital services are covered for eligible OHIP patients. That does **not** mean everything is free. Medicines, dental care, vision care, forms, sick notes, and many allied health services often involve separate coverage or out-of-pocket payment.\n\nGood news if you are new: there is **no waiting period for OHIP**. If you are eligible, you can apply as soon as you arrive in Ontario, and coverage begins once your application is approved. Do not wait until you are sick to apply.",
     },
     {
       id: "coverage-matrix",
@@ -493,6 +504,14 @@ const costsAndCoveragePage: PageContent = {
         },
         {
           cells: [
+            "Canadian Dental Care Plan (CDCP)",
+            "Dental coverage for eligible residents with no access to private dental insurance and adjusted family income under $90,000",
+            "Not every procedure is covered, and a co-payment can apply depending on income",
+            "Check eligibility and apply through the official Government of Canada CDCP page",
+          ],
+        },
+        {
+          cells: [
             "No active coverage",
             "You may still be able to access some services, but fees may apply",
             "Costs can be significant for visits, tests, or medicines",
@@ -507,7 +526,7 @@ const costsAndCoveragePage: PageContent = {
       type: "checklist",
       items: [
         "Many prescription medicines unless you qualify for a public program or have another plan",
-        "Dental care outside specific programs or benefit plans",
+        "Dental care, unless you qualify for the Canadian Dental Care Plan, Healthy Smiles Ontario, a community dental program, or a benefit plan",
         "Vision care outside specific eligibility pathways",
         "Physiotherapy, counselling, massage, and other allied health services unless a program or plan covers them",
         "Forms, letters, missed-appointment fees, and many other administrative charges",
@@ -518,7 +537,7 @@ const costsAndCoveragePage: PageContent = {
       title: "Drug coverage pathways",
       type: "default",
       content:
-        "Drug coverage is often where newcomers get surprised. A doctor visit may be covered, but the prescription may still cost money.\n\nPublic drug programs may help depending on age, income, and eligibility. Ontario also has the **Trillium Drug Program** for some people with high prescription costs compared with household income. If you have a school or private plan, check whether it coordinates with public coverage or replaces it.",
+        "Drug coverage is often where newcomers get surprised. A doctor visit may be covered, but the prescription may still cost money.\n\nPublic drug programs may help depending on age, income, and eligibility. The **Ontario Drug Benefit** covers many medicines for people 65 and older and people in certain programs, and **OHIP+** covers many prescriptions for people 24 and under who do not have a private plan. Ontario also has the **Trillium Drug Program** for some people with high prescription costs compared with household income. If you have a school or private plan, check whether it coordinates with public coverage or replaces it.",
     },
     {
       id: "coverage-scenarios",
@@ -539,6 +558,11 @@ const costsAndCoveragePage: PageContent = {
           question: "Will my medicine be free if my appointment was covered?",
           answer:
             "Not necessarily. Appointment coverage and prescription coverage are often separate.",
+        },
+        {
+          question: "Is dental care covered?",
+          answer:
+            "Dental care is separate from OHIP for most adults. The federal Canadian Dental Care Plan now covers many residents who have no private dental insurance and an adjusted family income under $90,000 — you usually need to have filed a Canadian tax return to qualify. Children in lower-income families may qualify for Healthy Smiles Ontario, and Kingston has a community dental clinic for people in specific programs.",
         },
         {
           question: "How do I know if a service is public, community, or private?",
@@ -593,7 +617,7 @@ const yourVisitPage: PageContent = {
       title: "Interpreter and communication help",
       type: "default",
       content:
-        "If you need language help, ask early. Do not wait until the end of the appointment. Browser translation can help you read this website, but it should not replace interpreter support for treatment decisions, medication instructions, or consent.\n\nYou can say: **'I need an interpreter, please.'** If a support person comes with you, remember that a family member may not always be the best or safest person to interpret complex or sensitive medical information.",
+        "If you need language help, ask early. Do not wait until the end of the appointment. You can read this website in several languages using the Language menu, but website translation should not replace interpreter support for treatment decisions, medication instructions, or consent.\n\nYou can say: **'I need an interpreter, please.'** Health811 (call 811) also offers phone support in many languages. If a support person comes with you, remember that a family member may not always be the best or safest person to interpret complex or sensitive medical information.",
     },
     {
       id: "questions-to-ask",
@@ -750,7 +774,7 @@ const medicinesPage: PageContent = {
   title: "Medicines and Pharmacies",
   description:
     "Understand prescriptions, refills, pharmacist help, and how to pay for medicines in Ontario.",
-  reviewed_on: "2026-03-23",
+  reviewed_on: "2026-06-11",
   review_status: "reviewed",
   sources: [
     {
@@ -775,7 +799,7 @@ const medicinesPage: PageContent = {
       title: "What a pharmacist can help with",
       type: "default",
       content:
-        "Pharmacists do more than hand out medicine. They can explain how to take a medicine safely, check for interactions, review side effects, and in Ontario they may be able to assess or prescribe for some minor conditions depending on the current provincial rules.\n\nA pharmacy is also one of the best places to ask practical questions such as: **Is this refill urgent? Is there a cheaper option? What should I do if I missed a dose?**",
+        "Pharmacists do more than hand out medicine. They can explain how to take a medicine safely, check for interactions, and review side effects.\n\nIn Ontario, pharmacists can also **assess and prescribe for 19 common minor ailments** — including pink eye, cold sores, urinary tract infections (in women), insect bites, and seasonal allergies. The assessment is free with your Ontario health card, and the list of conditions may continue to expand.\n\nA pharmacy is also one of the best places to ask practical questions such as: **Is this refill urgent? Is there a cheaper option? What should I do if I missed a dose?**",
     },
     {
       id: "fill-a-prescription",
@@ -850,9 +874,14 @@ const mentalHealthPage: PageContent = {
   title: "Mental Health Support",
   description:
     "Local mental health, counselling, youth support, and crisis pathways in Kingston.",
-  reviewed_on: "2026-03-23",
+  reviewed_on: "2026-06-11",
   review_status: "reviewed",
   sources: [
+    {
+      title: "9-8-8: Suicide Crisis Helpline",
+      url: "https://988.ca/",
+      note: "Official national suicide crisis helpline. Call or text 9-8-8, free, 24/7.",
+    },
     {
       title: "AMHS-KFLA",
       url: "https://www.amhs-kfla.ca/",
@@ -875,7 +904,7 @@ const mentalHealthPage: PageContent = {
       title: "If someone may not be safe",
       type: "callout",
       content:
-        "If there is immediate risk to life or safety, call 911. If there is urgent emotional distress or a mental health crisis, use local crisis support right away instead of waiting for a routine appointment.",
+        "If there is immediate risk to life or safety, call 911. For suicidal thoughts or overwhelming distress, you can **call or text 9-8-8** (Suicide Crisis Helpline) any time — it is free, confidential, and available 24/7 in English and French. You can also call the 24/7 AMHS-KFLA crisis line at 613-544-4229. Do not wait for a routine appointment.",
       link: { text: "Mental health listings", url: "/local-services?category=mental-health" },
     },
     {
@@ -930,7 +959,7 @@ const mentalHealthPage: PageContent = {
         {
           cells: [
             "I need mental health help tonight",
-            "Crisis support or emergency care if safety is at risk",
+            "Call or text 9-8-8, call the AMHS-KFLA crisis line, or use emergency care if safety is at risk",
             "Do not wait for a routine appointment when the situation feels unsafe",
           ],
         },
@@ -962,6 +991,11 @@ const mentalHealthPage: PageContent = {
       title: "Common questions",
       type: "faq",
       faqs: [
+        {
+          question: "Who can I call or text right now?",
+          answer:
+            "Call or text **9-8-8** (Suicide Crisis Helpline) any time, free, 24/7 — no referral needed. In Kingston, the AMHS-KFLA crisis line at 613-544-4229 also answers 24/7. If safety is at immediate risk, call 911.",
+        },
         {
           question: "What if I do not know whether this counts as a crisis?",
           answer:
@@ -1037,13 +1071,18 @@ const communityCarePage: PageContent = {
   title: "Allied and Community Care",
   description:
     "Use this page to understand home care, dental, rehab, counselling, vision support, and what may be public, community, student, or private.",
-  reviewed_on: "2026-03-23",
+  reviewed_on: "2026-06-11",
   review_status: "reviewed",
   sources: [
     {
       title: "Ontario Health atHome",
       url: "https://ontariohealthathome.ca/",
       note: "Official home and community care coordination information.",
+    },
+    {
+      title: "Canada: Canadian Dental Care Plan",
+      url: "https://www.canada.ca/en/services/benefits/dental/dental-care-plan.html",
+      note: "Official federal dental coverage program information and eligibility.",
     },
     {
       title: "Kingston Community Health Centres",
@@ -1122,7 +1161,7 @@ const communityCarePage: PageContent = {
         {
           title: "Dental care",
           content:
-            "Dental coverage is separate from regular doctor coverage. Some public or community dental programs exist for specific groups.",
+            "Dental coverage is separate from regular doctor coverage. The federal Canadian Dental Care Plan now covers many people without private dental insurance, and programs like Healthy Smiles Ontario and community dental clinics help specific groups.",
           icon: "shield",
           link: {
             text: "Dental and community listings",
@@ -1200,7 +1239,7 @@ const faqPage: PageContent = {
         {
           question: "I need an interpreter.",
           answer:
-            "Ask early. Use browser translation to read the site, but ask about interpreter support for appointments, medication instructions, consent, and test discussions.",
+            "Ask early. You can read this site in 33 languages using the Language menu, and you can show staff the quick phrases in the interpreter help tab. For appointments, medication instructions, consent, and test discussions, ask about professional interpreter support. Health811 (call 811) offers phone support in many languages.",
         },
         {
           question: "I need bloodwork after a visit.",
@@ -1220,7 +1259,7 @@ const faqPage: PageContent = {
         {
           question: "I need mental health help tonight.",
           answer:
-            "Use crisis support or emergency care if safety is at risk. Do not wait for a routine appointment.",
+            "Call or text 9-8-8 (Suicide Crisis Helpline) any time, or call the 24/7 AMHS-KFLA crisis line at 613-544-4229. Use emergency care if safety is at risk. Do not wait for a routine appointment.",
         },
         {
           question: "I do not understand a requisition or referral.",
@@ -1273,7 +1312,7 @@ const aboutPage: PageContent = {
   title: "About, Trust, and Privacy",
   description:
     "Learn how this guide works, how sources and review status are handled, and how to report changes.",
-  reviewed_on: "2026-03-23",
+  reviewed_on: "2026-06-11",
   review_status: "reviewed",
   sources: [
     {
@@ -1302,7 +1341,7 @@ const aboutPage: PageContent = {
       title: "Accessibility and language",
       type: "default",
       content:
-        "This site is built to be keyboard friendly, mobile first, and readable in plain language. For language access, we support browser translation guidance plus multilingual quick-start phrases for urgent situations.\n\nCurrent translation priority is: urgent help, start-here guidance, and interpreter support prompts. Automatic translation can still be wrong for medical details, so ask about interpreter support for clinical conversations when you need one.",
+        "This site is built to be keyboard friendly, mobile first, and readable in plain language.\n\nYou can read the full guide in **33 languages** using the Language menu in the header — from العربية and Soomaali to ਪੰਜਾਬੀ, ትግርኛ, Yorùbá, and Українська — with every page and menu served directly on this site. All translations are machine-assisted; French, Spanish, Arabic, and Simplified Chinese received an additional review pass, and the rest are labelled as automatic translation. **English remains the reference version** — if a translated sentence seems unclear or surprising, check the English text or ask someone to confirm it.\n\nDozens more languages can open this site through Google Translate from the same menu, and the interpreter help tab includes urgent quick phrases in over 20 languages that you can show to staff.\n\nDirectory listings (service names, addresses, phone numbers, and hours) stay in English so they match official sources exactly.\n\nTranslation of any kind can still be wrong for medical details, so ask about professional interpreter support for appointments, medication instructions, and consent. Health811 (call 811) offers phone support in many languages.",
     },
     {
       id: "privacy",

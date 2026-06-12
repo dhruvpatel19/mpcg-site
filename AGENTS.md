@@ -27,6 +27,8 @@ npm run validate
 
 Page content lives in `src/data/cities/kingston/content.ts` and must use the typed `PageContent` schema from `src/types.ts`.
 
+Translated content lives in `src/data/cities/kingston/content.{fr,es,ar,zh}.ts` and must mirror the English structure exactly: same page keys, same section ids, same section types, same URLs. Only human-readable text is translated. UI strings live in `src/i18n/strings/<lang>.ts` typed by `UIStrings` in `src/i18n/types.ts`. The content validator checks translation parity.
+
 Allowed `PageSection.type` values:
 
 - `default`

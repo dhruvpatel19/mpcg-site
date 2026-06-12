@@ -22,6 +22,18 @@ interface SectionProps {
   index: number;
 }
 
+/**
+ * Step items use a "Heading: body" convention. Split on the first ASCII or
+ * full-width colon so translated content (e.g. Chinese "：") renders the same.
+ */
+const splitStepItem = (item: string): [string, string] => {
+  const match = item.match(/[:：]/);
+  if (!match || match.index === undefined) {
+    return [item, ""];
+  }
+  return [item.slice(0, match.index), item.slice(match.index + 1).trim()];
+};
+
 const iconMap: Record<string, React.ReactNode> = {
   stethoscope: <Stethoscope size={24} />,
   heart: <HeartPulse size={24} />,
@@ -78,7 +90,7 @@ export const Section: React.FC<SectionProps> = ({ section, index }) => {
         return (
           <div className="space-y-8">
             {section.items?.map((item, itemIndex) => {
-              const [heading, ...rest] = item.split(":");
+              const [heading, body] = splitStepItem(item);
               return (
                 <div key={item} className="flex gap-5">
                   <div className="flex flex-col items-center">
@@ -92,7 +104,7 @@ export const Section: React.FC<SectionProps> = ({ section, index }) => {
                   <div className="space-y-2 pb-8">
                     <h3 className="text-xl font-bold text-stone-900">{heading}</h3>
                     <p className="text-sm leading-relaxed text-stone-600">
-                      {rest.join(":").trim() || item}
+                      {body || item}
                     </p>
                   </div>
                 </div>
@@ -182,7 +194,7 @@ export const Section: React.FC<SectionProps> = ({ section, index }) => {
                     {section.columns?.map((column) => (
                       <th
                         key={column}
-                        className="border-b border-stone-200 px-4 py-4 text-left font-bold text-stone-900"
+                        className="border-b border-stone-200 px-4 py-4 text-start font-bold text-stone-900"
                       >
                         {column}
                       </th>
@@ -218,7 +230,7 @@ export const Section: React.FC<SectionProps> = ({ section, index }) => {
                 key={faq.question}
                 className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm"
               >
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-left font-bold text-stone-900">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-start font-bold text-stone-900">
                   <span>{faq.question}</span>
                   <MessageCircleQuestion size={18} className="shrink-0 text-emerald-700" />
                 </summary>

@@ -12,7 +12,6 @@ import { useCity } from "../CityContext";
 import {
   ACCESS_FILTERS,
   AUDIENCE_FILTERS,
-  CATEGORY_CONFIG,
   CATEGORY_ORDER,
   DIRECTORY_SORTS,
   LEVEL_FILTERS,
@@ -22,6 +21,7 @@ import {
 import { Seo } from "../components/Seo";
 import { ServiceCard } from "../components/ServiceCard";
 import { trackDirectorySearch } from "../lib/analytics";
+import { fillTemplate, useI18n } from "../i18n";
 import {
   filterServices,
   parseListParam,
@@ -44,6 +44,7 @@ const setListParam = (searchParams: URLSearchParams, key: string, values: string
 
 export const LocalServices: React.FC = () => {
   const { city } = useCity();
+  const { t, language } = useI18n();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchInput, setSearchInput] = useState(searchParams.get("q") ?? "");
   const deferredSearch = useDeferredValue(searchInput);
@@ -143,23 +144,27 @@ export const LocalServices: React.FC = () => {
   return (
     <div className="section-container space-y-12 py-12">
       <Seo
-        title="Local services"
-        description="Search newcomer-friendly healthcare, mental health, pharmacy, coverage, and navigation services in Kingston, Ontario."
+        title={t.directory.seoTitle}
+        description={t.directory.seoDescription}
         path={`/local-services${searchParams.toString() ? `?${searchParams.toString()}` : ""}`}
       />
 
       <header className="space-y-6">
         <div className="space-y-3">
           <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-700">
-            Kingston directory
+            {t.directory.kicker}
           </p>
           <h1 className="text-4xl font-extrabold tracking-tight text-stone-900 sm:text-5xl">
-            Search local health services
+            {t.directory.title}
           </h1>
           <p className="max-w-3xl text-lg leading-relaxed text-stone-600">
-            Search by service, symptom, document, or task. Examples: walk in, after hours,
-            bloodwork, refill, health card, student clinic, or newcomer support.
+            {t.directory.lead}
           </p>
+          {language !== "en" ? (
+            <p className="max-w-3xl rounded-2xl border border-stone-200 bg-stone-50 p-4 text-sm text-stone-600">
+              {t.common.directoryEnglishNote}
+            </p>
+          ) : null}
         </div>
 
         <div className="rounded-[2rem] border border-stone-200 bg-white p-6 shadow-sm">
@@ -167,7 +172,7 @@ export const LocalServices: React.FC = () => {
             <label className="relative block">
               <Search
                 size={20}
-                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-stone-400"
+                className="pointer-events-none absolute start-4 top-1/2 -translate-y-1/2 text-stone-400"
               />
               <input
                 type="text"
@@ -179,13 +184,13 @@ export const LocalServices: React.FC = () => {
                     setParam(params, "q", value.trim() || undefined);
                   });
                 }}
-                placeholder="Search by need, service name, address, or keyword"
-                className="w-full rounded-2xl border border-stone-200 bg-stone-50 py-4 pl-12 pr-4 text-sm"
+                placeholder={t.directory.searchPlaceholder}
+                className="w-full rounded-2xl border border-stone-200 bg-stone-50 py-4 ps-12 pe-4 text-sm"
               />
             </label>
 
             <label className="block">
-              <span className="sr-only">Sort results</span>
+              <span className="sr-only">{t.directory.sortAriaLabel}</span>
               <select
                 value={sort}
                 onChange={(event) =>
@@ -193,10 +198,10 @@ export const LocalServices: React.FC = () => {
                 }
                 className="w-full rounded-2xl border border-stone-200 bg-white px-4 py-4 text-sm"
               >
-                <option value="relevance">Sort: Relevance</option>
-                <option value="alphabetical">Sort: A to Z</option>
-                <option value="recently-verified">Sort: Recently reviewed</option>
-                <option value="area">Sort: Area</option>
+                <option value="relevance">{t.directory.sortRelevance}</option>
+                <option value="alphabetical">{t.directory.sortAlphabetical}</option>
+                <option value="recently-verified">{t.directory.sortRecentlyReviewed}</option>
+                <option value="area">{t.directory.sortArea}</option>
               </select>
             </label>
 
@@ -207,7 +212,7 @@ export const LocalServices: React.FC = () => {
                 className={`rounded-2xl border p-4 ${
                   view === "grid" ? "border-stone-900 bg-stone-900 text-white" : "border-stone-200 bg-white text-stone-700"
                 }`}
-                aria-label="Grid view"
+                aria-label={t.directory.gridViewLabel}
               >
                 <LayoutGrid size={18} />
               </button>
@@ -217,7 +222,7 @@ export const LocalServices: React.FC = () => {
                 className={`rounded-2xl border p-4 ${
                   view === "list" ? "border-stone-900 bg-stone-900 text-white" : "border-stone-200 bg-white text-stone-700"
                 }`}
-                aria-label="List view"
+                aria-label={t.directory.listViewLabel}
               >
                 <List size={18} />
               </button>
@@ -232,7 +237,7 @@ export const LocalServices: React.FC = () => {
                 category === "all" ? "border-emerald-600 bg-emerald-600 text-white" : "border-stone-200 bg-stone-50 text-stone-700"
               }`}
             >
-              All services
+              {t.directory.allServices}
             </button>
             {CATEGORY_ORDER.map((slug) => (
               <button
@@ -243,7 +248,7 @@ export const LocalServices: React.FC = () => {
                   category === slug ? "border-emerald-600 bg-emerald-600 text-white" : "border-stone-200 bg-stone-50 text-stone-700"
                 }`}
               >
-                {CATEGORY_CONFIG[slug].shortLabel}
+                {t.categories[slug].shortLabel}
               </button>
             ))}
           </div>
@@ -252,7 +257,7 @@ export const LocalServices: React.FC = () => {
             <div className="rounded-2xl border border-stone-200 bg-stone-50 p-4">
               <div className="mb-3 flex items-center gap-2 text-sm font-bold text-stone-900">
                 <Filter size={16} />
-                Audience
+                {t.directory.audienceTitle}
               </div>
               <div className="space-y-2">
                 {AUDIENCE_FILTERS.map((item) => (
@@ -262,7 +267,7 @@ export const LocalServices: React.FC = () => {
                       checked={audience.includes(item.slug)}
                       onChange={() => toggleListFilter("audience", item.slug, audience)}
                     />
-                    <span>{item.label}</span>
+                    <span>{t.filters.audience[item.slug] ?? item.label}</span>
                   </label>
                 ))}
               </div>
@@ -271,7 +276,7 @@ export const LocalServices: React.FC = () => {
             <div className="rounded-2xl border border-stone-200 bg-stone-50 p-4">
               <div className="mb-3 flex items-center gap-2 text-sm font-bold text-stone-900">
                 <SlidersHorizontal size={16} />
-                Access
+                {t.directory.accessTitle}
               </div>
               <div className="space-y-2">
                 {ACCESS_FILTERS.map((item) => (
@@ -281,14 +286,16 @@ export const LocalServices: React.FC = () => {
                       checked={access.includes(item.slug)}
                       onChange={() => toggleListFilter("access", item.slug, access)}
                     />
-                    <span>{item.label}</span>
+                    <span>{t.filters.access[item.slug] ?? item.label}</span>
                   </label>
                 ))}
               </div>
             </div>
 
             <div className="rounded-2xl border border-stone-200 bg-stone-50 p-4">
-              <div className="mb-3 text-sm font-bold text-stone-900">Care level</div>
+              <div className="mb-3 text-sm font-bold text-stone-900">
+                {t.directory.careLevelTitle}
+              </div>
               <div className="space-y-2">
                 {LEVEL_FILTERS.map((item) => (
                   <label key={item.slug} className="flex items-center gap-2 text-sm text-stone-700">
@@ -297,14 +304,16 @@ export const LocalServices: React.FC = () => {
                       checked={level.includes(item.slug)}
                       onChange={() => toggleListFilter("level", item.slug, level)}
                     />
-                    <span>{item.label}</span>
+                    <span>{t.filters.level[item.slug] ?? item.label}</span>
                   </label>
                 ))}
               </div>
             </div>
 
             <div className="rounded-2xl border border-stone-200 bg-stone-50 p-4">
-              <div className="mb-3 text-sm font-bold text-stone-900">Coverage and area</div>
+              <div className="mb-3 text-sm font-bold text-stone-900">
+                {t.directory.coverageAreaTitle}
+              </div>
               <div className="space-y-2">
                 {PAYMENT_FILTERS.map((item) => (
                   <label key={item.slug} className="flex items-center gap-2 text-sm text-stone-700">
@@ -313,11 +322,11 @@ export const LocalServices: React.FC = () => {
                       checked={payment.includes(item.slug)}
                       onChange={() => toggleListFilter("payment", item.slug, payment)}
                     />
-                    <span>{item.label}</span>
+                    <span>{t.filters.payment[item.slug] ?? item.label}</span>
                   </label>
                 ))}
                 <div className="pt-2 text-xs font-bold uppercase tracking-[0.2em] text-stone-400">
-                  Area
+                  {t.directory.areaLabel}
                 </div>
                 {LOCATION_FILTERS.map((item) => (
                   <label key={item} className="flex items-center gap-2 text-sm text-stone-700">
@@ -326,7 +335,7 @@ export const LocalServices: React.FC = () => {
                       checked={location.includes(item)}
                       onChange={() => toggleListFilter("location", item, location)}
                     />
-                    <span>{item.replace("-", " ")}</span>
+                    <span>{t.filters.location[item] ?? item.replace("-", " ")}</span>
                   </label>
                 ))}
               </div>
@@ -334,12 +343,10 @@ export const LocalServices: React.FC = () => {
           </div>
 
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-stone-200 pt-4 text-sm text-stone-600">
-            <p>
-              Showing <span className="font-bold text-stone-900">{filteredServices.length}</span> services
-            </p>
+            <p>{fillTemplate(t.directory.showingServices, { count: filteredServices.length })}</p>
             <button type="button" onClick={resetFilters} className="inline-flex items-center gap-2 font-bold text-emerald-700">
               <RefreshCcw size={16} />
-              Reset filters
+              {t.directory.resetFilters}
             </button>
           </div>
         </div>
@@ -347,19 +354,19 @@ export const LocalServices: React.FC = () => {
 
       <section className="grid gap-4 rounded-[2rem] border border-stone-200 bg-stone-900 p-6 text-white lg:grid-cols-4">
         <div className="lg:col-span-2">
-          <h2 className="text-2xl font-bold">Trust and review status</h2>
-          <p className="mt-2 max-w-2xl text-sm text-stone-300">
-            This directory is static, not live. We show the last recorded review date,
-            official source links when available, and which listings still need a local recheck.
-            Confirm hours and same-day access before you go.
-          </p>
+          <h2 className="text-2xl font-bold">{t.directory.trustPanelTitle}</h2>
+          <p className="mt-2 max-w-2xl text-sm text-stone-300">{t.directory.trustPanelBody}</p>
         </div>
         <div className="rounded-2xl bg-white/5 p-4">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-stone-400">Verified</p>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-stone-400">
+            {t.directory.verifiedLabel}
+          </p>
           <p className="mt-2 text-3xl font-extrabold">{verificationCounts.verified}</p>
         </div>
         <div className="rounded-2xl bg-white/5 p-4">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-stone-400">Needs recheck</p>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-stone-400">
+            {t.directory.needsRecheckLabel}
+          </p>
           <p className="mt-2 text-3xl font-extrabold">{verificationCounts["needs-recheck"]}</p>
         </div>
       </section>
@@ -373,31 +380,26 @@ export const LocalServices: React.FC = () => {
           </div>
         ) : (
           <div className="rounded-[2rem] border border-dashed border-stone-300 bg-white p-10 text-center shadow-sm">
-            <h2 className="text-2xl font-bold text-stone-900">No services matched those filters</h2>
-            <p className="mt-3 text-stone-600">
-              Try a broader search like bloodwork, refill, mental health, health card, or
-              walk in. You can also clear all filters and start again.
-            </p>
+            <h2 className="text-2xl font-bold text-stone-900">{t.directory.noResultsTitle}</h2>
+            <p className="mt-3 text-stone-600">{t.directory.noResultsBody}</p>
             <button type="button" onClick={resetFilters} className="btn-secondary mt-6">
-              Reset filters
+              {t.directory.resetFilters}
             </button>
           </div>
         )}
       </section>
 
       <section className="rounded-[2rem] border border-stone-200 bg-white p-6 shadow-sm">
-        <h2 className="text-2xl font-bold text-stone-900">Not sure where to start?</h2>
+        <h2 className="text-2xl font-bold text-stone-900">{t.directory.notSureTitle}</h2>
         <p className="mt-3 max-w-3xl text-sm leading-relaxed text-stone-600">
-          If you are unsure whether you need emergency care, urgent care, a walk-in clinic, or
-          pharmacy support, start with the urgent guidance page or call Health811 for nurse
-          advice.
+          {t.directory.notSureBody}
         </p>
         <div className="mt-5 flex flex-wrap gap-3">
           <Link to="/need-help-now" className="btn-primary">
-            Need Help Now
+            {t.directory.needHelpNowCta}
           </Link>
           <a href="tel:811" className="btn-secondary">
-            Call Health811
+            {t.directory.callHealth811}
           </a>
         </div>
       </section>

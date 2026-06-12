@@ -1,9 +1,21 @@
 import { kingstonCityData } from "../src/data/cities";
+import { kingstonContentFr } from "../src/data/cities/kingston/content.fr";
+import { kingstonContentEs } from "../src/data/cities/kingston/content.es";
+import { kingstonContentAr } from "../src/data/cities/kingston/content.ar";
+import { kingstonContentZh } from "../src/data/cities/kingston/content.zh";
+import { GENERATED_LANGUAGE_LOADERS } from "../src/i18n/generated/registry";
 import { DIRECTORY_QUERY_KEYS } from "../src/config/site";
 import { VALID_DIRECTORY_VALUES } from "../src/lib/directory";
-import { SECTION_TYPES } from "../src/types";
+import { SECTION_TYPES, type PageContent } from "../src/types";
 
 const errors: string[] = [];
+
+const translatedContent: Record<string, Record<string, PageContent>> = {
+  fr: kingstonContentFr,
+  es: kingstonContentEs,
+  ar: kingstonContentAr,
+  zh: kingstonContentZh,
+};
 
 const pageEntries = Object.entries(kingstonCityData.pages);
 const pageIds = new Set(pageEntries.map(([pageId]) => pageId));
@@ -100,35 +112,35 @@ const validateInternalUrl = (url: string, sourceLabel: string) => {
   }
 };
 
-for (const [pageId, page] of pageEntries) {
+const validatePage = (page: PageContent, label: string) => {
   const sectionIdSet = new Set<string>();
 
   page.sections.forEach((section, index) => {
     if (!allowedSectionTypes.has(section.type)) {
-      addError(`${pageId}: unsupported section type "${section.type}"`);
+      addError(`${label}: unsupported section type "${section.type}"`);
     }
 
     const resolvedId = section.id ?? `section-${index}`;
     if (sectionIdSet.has(resolvedId)) {
-      addError(`${pageId}: duplicate section id "${resolvedId}"`);
+      addError(`${label}: duplicate section id "${resolvedId}"`);
     }
     sectionIdSet.add(resolvedId);
 
     if (section.type === "grid" && !section.gridItems?.length) {
-      addError(`${pageId}/${resolvedId}: grid section is missing gridItems`);
+      addError(`${label}/${resolvedId}: grid section is missing gridItems`);
     }
 
     if (section.type === "table") {
       if (!section.columns?.length || !section.rows?.length) {
-        addError(`${pageId}/${resolvedId}: table section is missing columns or rows`);
+        addError(`${label}/${resolvedId}: table section is missing columns or rows`);
       }
       if (section.rows?.some((row) => row.cells.length !== section.columns?.length)) {
-        addError(`${pageId}/${resolvedId}: table row cell counts do not match columns`);
+        addError(`${label}/${resolvedId}: table row cell counts do not match columns`);
       }
     }
 
     if (section.type === "faq" && !section.faqs?.length) {
-      addError(`${pageId}/${resolvedId}: faq section is missing faqs`);
+      addError(`${label}/${resolvedId}: faq section is missing faqs`);
     }
 
     const links = [
@@ -137,7 +149,7 @@ for (const [pageId, page] of pageEntries) {
     ].filter(Boolean) as string[];
 
     links.forEach((linkUrl) =>
-      validateInternalUrl(linkUrl, `${pageId}/${resolvedId}`),
+      validateInternalUrl(linkUrl, `${label}/${resolvedId}`),
     );
 
     const markdownSources = [
@@ -147,10 +159,77 @@ for (const [pageId, page] of pageEntries) {
     markdownSources.forEach((source) => {
       const matches = source.matchAll(markdownInternalLinkPattern);
       for (const match of matches) {
-        validateInternalUrl(match[1], `${pageId}/${resolvedId}`);
+        validateInternalUrl(match[1], `${label}/${resolvedId}`);
       }
     });
   });
+};
+
+for (const [pageId, page] of pageEntries) {
+  validatePage(page, pageId);
+}
+
+// Translated content must mirror the English structure exactly: same pages,
+// same section ids and types, and only valid internal links. Anchors are
+// validated against the English section ids, which translations must keep.
+const validateTranslatedRecord = (
+  languageCode: string,
+  pages: Record<string, PageContent>,
+) => {
+  const englishPageIds = new Set(pageEntries.map(([pageId]) => pageId));
+  const translatedPageIds = new Set(Object.keys(pages));
+
+  for (const pageId of englishPageIds) {
+    if (!translatedPageIds.has(pageId)) {
+      addError(`${languageCode}: missing translated page "${pageId}"`);
+    }
+  }
+  for (const pageId of translatedPageIds) {
+    if (!englishPageIds.has(pageId)) {
+      addError(`${languageCode}: unexpected extra page "${pageId}"`);
+    }
+  }
+
+  for (const [pageId, page] of Object.entries(pages)) {
+    const label = `${languageCode}/${pageId}`;
+    validatePage(page, label);
+
+    const englishPage = kingstonCityData.pages[pageId];
+    if (!englishPage) {
+      continue;
+    }
+
+    if (page.sections.length !== englishPage.sections.length) {
+      addError(
+        `${label}: section count ${page.sections.length} does not match English (${englishPage.sections.length})`,
+      );
+      continue;
+    }
+
+    page.sections.forEach((section, index) => {
+      const englishSection = englishPage.sections[index];
+      const sectionId = section.id ?? `section-${index}`;
+      const englishId = englishSection.id ?? `section-${index}`;
+      if (sectionId !== englishId) {
+        addError(
+          `${label}: section ${index} id "${sectionId}" does not match English id "${englishId}"`,
+        );
+      }
+      if (section.type !== englishSection.type) {
+        addError(
+          `${label}/${sectionId}: type "${section.type}" does not match English type "${englishSection.type}"`,
+        );
+      }
+    });
+  }
+};
+
+for (const [languageCode, pages] of Object.entries(translatedContent)) {
+  // Skip placeholder modules that simply re-export the English content.
+  if (pages === kingstonCityData.pages) {
+    continue;
+  }
+  validateTranslatedRecord(languageCode, pages);
 }
 
 const seenServiceIds = new Set<string>();
@@ -182,10 +261,23 @@ kingstonCityData.services.forEach((service) => {
   }
 });
 
-if (errors.length) {
-  console.error("Content validation failed:\n");
-  errors.forEach((error) => console.error(`- ${error}`));
-  process.exit(1);
-}
+const main = async () => {
+  for (const [code, loader] of Object.entries(GENERATED_LANGUAGE_LOADERS)) {
+    try {
+      const module = await loader();
+      validateTranslatedRecord(code, module.pages);
+    } catch (error) {
+      addError(`${code}: failed to load generated language module (${error})`);
+    }
+  }
 
-console.log("Content validation passed.");
+  if (errors.length) {
+    console.error("Content validation failed:\n");
+    errors.forEach((error) => console.error(`- ${error}`));
+    process.exit(1);
+  }
+
+  console.log("Content validation passed.");
+};
+
+void main();

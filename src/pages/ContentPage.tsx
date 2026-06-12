@@ -12,18 +12,14 @@ import { FeedbackForm } from "../components/FeedbackForm";
 import { Seo } from "../components/Seo";
 import { Section } from "../components/Section";
 import { formatIsoDate } from "../lib/format";
+import { useI18n } from "../i18n";
 import { useToast } from "../components/ToastProvider";
 import { NotFound } from "./NotFound";
-
-const reviewLabels = {
-  reviewed: "Reviewed against the current source set used by this project.",
-  "general-guidance": "Reviewed as general guidance. Local details can still change quickly.",
-  "needs-local-recheck": "Useful guidance, but local details still need more checking.",
-};
 
 export const ContentPage: React.FC = () => {
   const { pageId } = useParams<{ pageId: string }>();
   const { city } = useCity();
+  const { t, meta } = useI18n();
   const location = useLocation();
   const { showToast } = useToast();
   const page = pageId ? city.pages[pageId] : undefined;
@@ -44,10 +40,10 @@ export const ContentPage: React.FC = () => {
         await navigator.share(shareData);
       } else {
         await navigator.clipboard.writeText(window.location.href);
-        showToast("Link copied", "You can now paste this page link anywhere.");
+        showToast(t.contentPage.linkCopiedTitle, t.contentPage.linkCopiedBody);
       }
     } catch {
-      showToast("Share cancelled");
+      showToast(t.contentPage.shareCancelled);
     }
   };
 
@@ -59,16 +55,16 @@ export const ContentPage: React.FC = () => {
         <div className="space-y-6">
           <nav className="flex flex-wrap items-center gap-2 text-sm text-stone-500">
             <Link to="/" className="hover:text-emerald-700">
-              Home
+              {t.contentPage.breadcrumbHome}
             </Link>
-            <ChevronRight size={14} />
+            <ChevronRight size={14} className="rtl:rotate-180" />
             <span className="text-stone-900">{page.title}</span>
           </nav>
 
           <div className="space-y-4">
             <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.2em] text-emerald-700">
               <ShieldCheck size={14} />
-              Plain-language guide
+              {t.contentPage.badge}
             </div>
             <h1 className="text-4xl font-extrabold tracking-tight text-stone-900 sm:text-5xl">
               {page.title}
@@ -82,33 +78,30 @@ export const ContentPage: React.FC = () => {
         <aside className="space-y-4 rounded-[2rem] border border-stone-200 bg-white p-6 shadow-sm">
           <div className="space-y-2">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-stone-500">
-              Review status
+              {t.contentPage.reviewStatusTitle}
             </p>
             <p className="text-sm text-stone-700">
-              {reviewLabels[page.review_status ?? "general-guidance"]}
+              {t.contentPage.reviewLabels[page.review_status ?? "general-guidance"]}
             </p>
             {page.reviewed_on ? (
               <p className="text-sm text-stone-600">
-                Last page review: {formatIsoDate(page.reviewed_on)}
+                {t.contentPage.lastReviewPrefix} {formatIsoDate(page.reviewed_on, meta.localeTag)}
               </p>
             ) : (
-              <p className="text-sm text-stone-600">
-                This page does not have a recorded page-level review date.
-              </p>
+              <p className="text-sm text-stone-600">{t.contentPage.noReviewDate}</p>
             )}
           </div>
           <div className="rounded-2xl bg-stone-50 p-4 text-sm text-stone-600">
-            Browser translation can help you read. For appointments, medicines, consent, and
-            test instructions, ask if interpreter support is available.
+            {t.contentPage.translationAside}
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <button type="button" onClick={handleShare} className="btn-secondary inline-flex items-center justify-center gap-2">
               <Share2 size={16} />
-              Share
+              {t.contentPage.share}
             </button>
             <button type="button" onClick={() => window.print()} className="btn-secondary inline-flex items-center justify-center gap-2">
               <Printer size={16} />
-              Print
+              {t.contentPage.print}
             </button>
           </div>
         </aside>
@@ -123,11 +116,10 @@ export const ContentPage: React.FC = () => {
           {page.sources?.length ? (
             <section id="sources" className="space-y-4 rounded-[2rem] border border-stone-200 bg-white p-8 shadow-sm">
               <div className="space-y-2">
-                <h2 className="text-2xl font-extrabold text-stone-900">Sources for this page</h2>
-                <p className="text-sm text-stone-600">
-                  These are the main official or primary sources used for the current page
-                  review. Local processes can still change between review cycles.
-                </p>
+                <h2 className="text-2xl font-extrabold text-stone-900">
+                  {t.contentPage.sourcesTitle}
+                </h2>
+                <p className="text-sm text-stone-600">{t.contentPage.sourcesNote}</p>
               </div>
               <ul className="space-y-3">
                 {page.sources.map((source) => (
@@ -152,7 +144,7 @@ export const ContentPage: React.FC = () => {
 
         <aside className="space-y-4">
           <div className="sticky top-32 rounded-[2rem] border border-stone-200 bg-white p-6 shadow-sm">
-            <h2 className="text-lg font-bold text-stone-900">On this page</h2>
+            <h2 className="text-lg font-bold text-stone-900">{t.contentPage.onThisPage}</h2>
             <nav className="mt-4 space-y-3">
               {page.sections.map((section, index) => (
                 <a
@@ -165,19 +157,16 @@ export const ContentPage: React.FC = () => {
               ))}
               {page.sources?.length ? (
                 <a href="#sources" className="block text-sm text-stone-600 hover:text-emerald-700">
-                  Sources
+                  {t.contentPage.sourcesAnchorLabel}
                 </a>
               ) : null}
             </nav>
             <div className="mt-6 rounded-2xl bg-stone-50 p-4 text-sm text-stone-600">
               <div className="mb-2 inline-flex items-center gap-2 font-bold text-stone-900">
                 <Globe size={14} />
-                Translation reminder
+                {t.contentPage.translationReminderTitle}
               </div>
-              <p>
-                If something affects your treatment or safety, confirm it with a clinician or
-                interpreter rather than relying only on machine translation.
-              </p>
+              <p>{t.contentPage.translationReminderBody}</p>
             </div>
           </div>
         </aside>

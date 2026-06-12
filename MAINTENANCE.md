@@ -14,10 +14,22 @@ Most likely to go stale:
 
 ## Where to edit
 
-- Page content: `src/data/cities/kingston/content.ts`
+- Page content (English, reference version): `src/data/cities/kingston/content.ts`
+- Translated page content: `src/data/cities/kingston/content.{fr,es,ar,zh}.ts`
+- UI strings: `src/i18n/strings/{en,fr,es,ar,zh}.ts` (navigation labels live here too)
+- Urgent quick phrases: `src/i18n/phrases.ts`
+- Long-tail Google Translate language list: `src/i18n/moreLanguages.ts`
 - Raw services: `src/data/cities/kingston/services.json`
 - Normalized category/access/trust metadata: `src/data/cities/kingston/serviceEnhancements.ts`
-- Site-wide navigation, filters, and category config: `src/config/site.ts`
+- Site-wide filters and category config: `src/config/site.ts`
+
+## Translation upkeep
+
+- English is the reference version. When you change English content or UI strings, make the same change in the four translated files (or regenerate that page's translation) in the same sitting.
+- `npm run validate:content` enforces that every translated content file keeps the same pages, section ids, section types, and valid links as English, so a forgotten or structurally broken translation fails validation.
+- TypeScript enforces that every UI strings file has every key.
+- Directory data stays English on purpose; do not translate `services.json`.
+- Keep medical caution identical across languages: a translation must never sound more certain or more reassuring than the English.
 
 ## Review cadence
 
